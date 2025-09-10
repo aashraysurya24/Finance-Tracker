@@ -41,8 +41,8 @@ Finance Tracker/
 ## ⚡ Getting Started  
 
 ### 1. Clone the repo  
-git clone https://github.com/aashraysurya24/finance-tracker.git
-cd finance-tracker/Backend
+- git clone https://github.com/aashraysurya24/finance-tracker.git
+- cd finance-tracker/Backend
 
 
 ### 2.  Setup environment
