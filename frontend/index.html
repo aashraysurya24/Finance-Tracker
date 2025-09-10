@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Finance Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>💰 Personal Finance Tracker</h1>
+            <p>Take control of your financial future with smart tracking and insights</p>
+        </header>
+
+        <nav class="nav-tabs">
+            <button class="nav-tab active" onclick="switchTab('dashboard')">📊 Dashboard</button>
+            <button class="nav-tab" onclick="switchTab('transactions')">💳 Transactions</button>
+            <button class="nav-tab" onclick="switchTab('budgets')">🎯 Budgets</button>
+            <button class="nav-tab" onclick="switchTab('insights')">📈 Insights</button>
+        </nav>
+
+        <div class="tab-content">
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-pane active">
+                <div class="dashboard-grid">
+                    <div class="card stat-card">
+                        <div class="stat-value" id="total-income">$0</div>
+                        <div class="stat-label">Total Income</div>
+                    </div>
+                    <div class="card stat-card" style="background: linear-gradient(135deg, #f5576c);">
+                        <div class="stat-value" id="total-expenses">$0</div>
+                        <div class="stat-label">Total Expenses</div>
+                    </div>
+                    <div class="card stat-card" style="background: linear-gradient(135deg, #00fe66);">
+                        <div class="stat-value" id="net-income">$0</div>
+                        <div class="stat-label">Net Income</div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="card">
+                        <h3>📊 Spending by Category</h3>
+                        <div class="chart-container">
+                            <canvas id="categoryChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3>📈 Monthly Trends</h3>
+                        <div class="chart-container">
+                            <canvas id="trendsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>📋 Recent Transactions</h3>
+                    <div id="recent-transactions" class="transaction-list">
+                        <!-- Recent transactions will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transactions Tab -->
+            <div id="transactions" class="tab-pane">
+                <div class="dashboard-grid">
+                    <div class="card">
+                        <h3>➕ Add Transaction</h3>
+                        <form id="transaction-form">
+                            <div class="form-group">
+                                <label>Type</label>
+                                <select id="transaction-type" required>
+                                    <option value="expense">💸 Expense</option>
+                                    <option value="income">💰 Income</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Amount ($)</label>
+                                <input type="number" id="transaction-amount" step="0.01" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Description</label>
+                                <input type="text" id="transaction-description" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Category</label>
+                                <select id="transaction-category" required>
+                                    <!-- Categories will be loaded dynamically -->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Date</label>
+                                <input type="date" id="transaction-date" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Add Transaction</button>
+                        </form>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>🔍 Filter Transactions</h3>
+                        <div class="form-group">
+                            <label>Start Date</label>
+                            <input type="date" id="filter-start-date">
+                        </div>
+                        <div class="form-group">
+                            <label>End Date</label>
+                            <input type="date" id="filter-end-date">
+                        </div>
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select id="filter-category">
+                                <option value="">All Categories</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Type</label>
+                            <select id="filter-type">
+                                <option value="">All Types</option>
+                                <option value="income">Income</option>
+                                <option value="expense">Expense</option>
+                            </select>
+                        </div>
+                        <button onclick="filterTransactions()" class="btn btn-primary">Apply Filter</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>📋 All Transactions</h3>
+                    <div id="all-transactions" class="transaction-list">
+                        <!-- All transactions will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Budgets Tab -->
+            <div id="budgets" class="tab-pane">
+                <div class="dashboard-grid">
+                    <div class="card">
+                        <h3>🎯 Add Budget</h3>
+                        <form id="budget-form">
+                            <div class="form-group">
+                                <label>Category</label>
+                                <select id="budget-category" required>
+                                    <!-- Expense categories will be loaded -->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Amount ($)</label>
+                                <input type="number" id="budget-amount" step="0.01" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Period</label>
+                                <select id="budget-period" required>
+                                    <option value="weekly">📅 Weekly</option>
+                                    <option value="monthly" selected>📆 Monthly</option>
+                                    <option value="yearly">🗓️ Yearly</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Set Budget</button>
+                        </form>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>📊 Budget Overview</h3>
+                        <div id="budget-summary">
+                            <!-- Budget summary will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>📋 Budget Status</h3>
+                    <div id="budget-status">
+                        <!-- Budget status will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Insights Tab -->
+            <div id="insights" class="tab-pane">
+                <div class="dashboard-grid">
+                    <div class="card">
+                        <h3>💡 Financial Insights</h3>
+                        <div id="insights-content">
+                            <!-- Insights will be loaded here -->
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>⚠️ Alerts & Recommendations</h3>
+                        <div id="recommendations">
+                            <!-- Recommendations will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Action Button -->
+    <button class="floating-action" onclick="openQuickAdd()" title="Quick Add Transaction">+</button>
+
+    <!-- Quick Add Modal -->
+    <div id="quickAddModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeQuickAdd()">&times;</span>
+            <h2>⚡ Quick Add Transaction</h2>
+            <form id="quick-transaction-form">
+                <div class="form-group">
+                    <label>Amount ($)</label>
+                    <input type="number" id="quick-amount" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <input type="text" id="quick-description" required>
+                </div>
+                <div class="form-group">
+                    <label>Type</label>
+                    <select id="quick-type" required>
+                        <option value="expense">💸 Expense</option>
+                        <option value="income">💰 Income</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="quick-category" required>
+                        <!-- Categories will be loaded dynamically -->
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Transaction</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+        <p>Loading...</p>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification">
+        <span id="notification-message"></span>
+        <button onclick="closeNotification()">&times;</button>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
